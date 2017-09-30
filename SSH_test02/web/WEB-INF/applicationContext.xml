@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">-->
+
+<beans  xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:jee="http://www.springframework.org/schema/jee"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.2.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+    <!--hibernate mysql configuration-->
+    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+        <!--<property name="driverClassName">-->
+            <!--<value>com.mysql.jdbc.Driver</value>-->
+        <!--</property>-->
+        <!--<property name="url">-->
+            <!--<value>jdbc:mysql://localhost:3306/ssh_test01?serverTimezone=UTC</value>-->
+        <!--</property>-->
+        <!--<property name="username">-->
+            <!--<value>root</value>-->
+        <!--</property>-->
+        <!--<property name="password">-->
+            <!--<value></value>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--hibernate dataSource configuration-->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="configLocation" value="classpath:hibernate.cfg.xml"></property>
+        <!--<property name="dataSource" ref="dataSource">-->
+        <!--</property>-->
+        <!--<property name="hibernateProperties">-->
+            <!--<props>-->
+                <!--<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>-->
+                <!--<prop key="hibernate.show_sql">true</prop>-->
+                <!--<prop key="format_sql">true</prop>-->
+                <!--&lt;!&ndash;<prop key="hibernate.current_session_context_class">thread</prop>&ndash;&gt;-->
+                <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
+                <!--&lt;!&ndash;<prop key="hibernate.format_sql">true</prop>&ndash;&gt;-->
+                <!--&lt;!&ndash;<prop key="hibernate.temp.use_jdbc_metadata_defaults ">false</prop>&ndash;&gt;-->
+            <!--</props>-->
+        <!--</property>-->
+
+        <!--hibernate .hbm.xml config-->
+        <!--<property name="packagesToScan">-->
+            <!--<list>-->
+                <!--<value>com.intergration.entity</value>-->
+            <!--</list>-->
+        <!--</property>-->
+
+        <!--<property name="mappingResources">-->
+            <!--<list>-->
+                <!--<value>com/intergration/entity/user.hbm.xml</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    </bean>
+
+
+
+    <!--IoC injection to create a userDao object-->
+    <bean id="userDAO" class="com.intergration.dao.UserDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+
+    <!--get userDAO object into UserServiceImpl,IoC injection to create a UserService object-->
+    <bean id="userService" class="com.intergration.service.UserServiceImpl">
+        <property name="userDAO" ref="userDAO"></property>
+    </bean>
+
+    <!--struts config,get UserService object into loginAction-->
+    <bean id="loginAction" class="com.intergration.action.LoginAction" scope="prototype">
+        <property name="userService" ref="userService"></property>
+    </bean>
+
+</beans>
